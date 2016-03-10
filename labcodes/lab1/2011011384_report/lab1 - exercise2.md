@@ -128,8 +128,9 @@ IN:
 IN: 
 0x00007cd1:  push   %ebp
 ```
-    
-	将上述代码与bootasm.S和bootblock.asm比较，发现汇编指令相同。
+
+	将上述代码与bootasm.S和bootblock.asm比较，发现汇编指令相同。  
+	
 4. 自己找一个bootloader或内核中的代码位置，设置断点并进行测试。  
 	a. 设置断点  
 
