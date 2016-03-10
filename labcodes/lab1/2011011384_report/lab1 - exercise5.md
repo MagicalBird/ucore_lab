@@ -24,14 +24,9 @@ ebp:0x00007bf8 eip:0x00007d73 args:0xc031fcfa 0xc08ed88e 0x64e4d08e 0xfa7502a8
 
 请完成实验，看看输出是否与上述显示大致一致，并解释最后一行各个数值的含义。  
 
+- ebp指向的堆栈位置储存着caller的ebp；ebp+4指向caller调用时的eip；ebp+8，+12，...可能是调用时保存的参数，对应的是第一个使用堆栈的函数，bootmain.c中的bootmain的寄存器值  
 
-ebp指向的堆栈位置储存着caller的ebp  
-ebp+4指向caller调用时的eip  
-ebp+8，+12，...可能是调用时保存的参数  
-对应的是第一个使用堆栈的函数，bootmain.c中的bootmain的寄存器值
-
-实验代码如下：  
-
+实验代码如下：
 ```C
     void
     print_stackframe(void) {
@@ -57,7 +52,6 @@ ebp+8，+12，...可能是调用时保存的参数
         }
     }
 ```
-    
 执行make qemu后得到以下输出：
 
 
