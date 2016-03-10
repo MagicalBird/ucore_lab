@@ -85,8 +85,6 @@ protcseg:
     将8042 Output Port（P2）得到字节的第2位置1，然后写入8042 Input buffer；  
 * 如何初始化GDT表
   -  一个简单的GDT表和其描述符已经静态储存在引导区中，载入即可  
-    ```
-    lgdt gdtdesc  
-    ```
+    ``lgdt gdtdesc``  
 * 如何使能和进入保护模式
   - 见上
