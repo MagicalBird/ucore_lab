@@ -60,7 +60,8 @@ qemu: $(UCOREIMG)
 	$(V)$(QEMU) -no-reboot -d in_asm -D q.log -parallel stdio -hda $< -serial null
 	```
 	c. 执行``make qemu``后得到q.log,得到部分结果如下：
-	```
+	
+```
 IN: 
 0x00007c00:  cli    
 0x00007c01:  cld    
@@ -126,16 +127,19 @@ IN:
 ----------------
 IN: 
 0x00007cd1:  push   %ebp
-	```
+```
+    
 	将上述代码与bootasm.S和bootblock.asm比较，发现汇编指令相同。
 4. 自己找一个bootloader或内核中的代码位置，设置断点并进行测试。  
 	a. 设置断点  
+
 	```
 	break clock_init
 	```
-	b. 执行``make debug``，结果如下：  
-	```
 	
+	b. 执行``make debug``，结果如下： 
+	
+```
 	   ┌──kern/driver/clock.c──────────────────────────────────────────────────────┐
    │35          outb(TIMER_MODE, TIMER_SEL0 | TIMER_RATEGEN | TIMER_16BIT);    │
    │36          outb(IO_TIMER1, TIMER_DIV(100) % 256);                         │
@@ -160,5 +164,5 @@ Breakpoint 3, clock_init () at libs/x86.h:57
 (gdb) p ticks
 $2 = 0
 (gdb) 
-	```
 
+```
