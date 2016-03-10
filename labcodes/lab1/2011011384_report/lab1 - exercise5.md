@@ -26,32 +26,34 @@ ebp:0x00007bf8 eip:0x00007d73 args:0xc031fcfa 0xc08ed88e 0x64e4d08e 0xfa7502a8
 
 - ebp指向的堆栈位置储存着caller的ebp；ebp+4指向caller调用时的eip；ebp+8，+12，...可能是调用时保存的参数，对应的是第一个使用堆栈的函数，bootmain.c中的bootmain的寄存器值  
 
-实验代码如下：
+实验代码如下：  
+    
 ```C
-    void
-    print_stackframe(void) {
-        uint32_t ebp, eip;
-        uint32_t *args;
-        
-        //ebp指向栈底的位置，esp指向栈顶的位置。
-        ebp = read_ebp();
-        //eip是cpu下一次执行指令的地址  
-        eip = read_eip();
-        int i, j;
-        for (i = 0; ebp != 0 && i < STACKFRAME_DEPTH;i++) {
-            cprintf("ebp:0x%08x eip:0x%08x args:", ebp, eip);
-            args = (uint32_t *)ebp + 2;
-             //ebp + 1是存的是返回地址，ebp+2才是第一个参数的存储位置。  
-            for (j = 0; j < 4; j++) {
+void
+print_stackframe(void) {
+    uint32_t ebp, eip;
+    uint32_t *args;
+    
+    //ebp指向栈底的位置，esp指向栈顶的位置。
+    ebp = read_ebp();
+    //eip是cpu下一次执行指令的地址  
+    eip = read_eip();
+    int i, j;
+    for (i = 0; ebp != 0 && i < STACKFRAME_DEPTH;i++) {
+        cprintf("ebp:0x%08x eip:0x%08x args:", ebp, eip);
+        args = (uint32_t *)ebp + 2;
+         //ebp + 1是存的是返回地址，ebp+2才是第一个参数的存储位置。  
+        for (j = 0; j < 4; j++) {
             cprintf("0x%08x ", args[j]);
         }
-        cprintf("\n");
-        print_debuginfo(eip - 1);
-        eip = ((uint32_t *)ebp)[1];
-        ebp = ((uint32_t *)ebp)[0];
-        }
+    cprintf("\n");
+    print_debuginfo(eip - 1);
+    eip = ((uint32_t *)ebp)[1];
+    ebp = ((uint32_t *)ebp)[0];
     }
+}
 ```
+    
 执行make qemu后得到以下输出：
 
 
