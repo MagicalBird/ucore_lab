@@ -8,17 +8,17 @@
     #include <defs.h>
     #include <x86.h>
     #include <elf.h>
-
+    
     #define SECTSIZE        512
     #define ELFHDR          ((struct elfhdr *)0x10000)      // scratch space
-
+    
     /* waitdisk - wait for disk ready */
     static void
     waitdisk(void) {
         while ((inb(0x1F7) & 0xC0) != 0x40)
             /* do nothing */;
     }
-
+    
     /* readsect - read a single sector at @secno into @dst */
     static void
     readsect(void *dst, uint32_t secno) {
@@ -34,15 +34,15 @@
         outb(0x1F6, ((secno >> 24) & 0xF) | 0xE0);
         //读取扇区
         outb(0x1F7, 0x20);                      // cmd 0x20 - read sectors
-
+    
         // wait for disk to be ready
         waitdisk();
-
+    
         //读取到dst，单位为双字
         // read a sector
         insl(0x1F0, dst, SECTSIZE / 4);
     }
-
+    
     /* *
      * readseg - read @count bytes at @offset from kernel into virtual address @va,
      * might copy more than asked.
@@ -64,7 +64,7 @@
             readsect((void *)va, secno);
         }
     }
-
+    
     /* bootmain - the entry of bootloader */
     void
     bootmain(void) {
@@ -76,7 +76,7 @@
         if (ELFHDR->e_magic != ELF_MAGIC) {
             goto bad;
         }
-
+    
         struct proghdr *ph, *eph;
         //获取文件的描述符
         // load each program segment (ignores ph flags)
@@ -90,11 +90,11 @@
         // call the entry point from the ELF header
         // note: does not return
         ((void (*)(void))(ELFHDR->e_entry & 0xFFFFFF))();   
-
+    
     bad:
         outw(0x8A00, 0x8A00);
         outw(0x8A00, 0x8E00);   
-
+    
         /* do nothing */
         while (1);
     }
