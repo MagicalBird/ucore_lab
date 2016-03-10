@@ -1,4 +1,4 @@
-##练习3：分析bootloader进入保护模式的过程
+## 练习3：分析bootloader进入保护模式的过程
 
 BIOS将通过读取硬盘主引导扇区到内存，并转跳到对应内存中的位置执行bootloader。请分析bootloader是如何完成从实模式进入保护模式的。  
   a.从cs = 0 && ip = 0x7c00进入bootloader启动过程，先关闭中断使能，将寄存器置零  
