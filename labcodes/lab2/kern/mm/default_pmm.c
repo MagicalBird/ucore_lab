@@ -69,7 +69,7 @@ static void
 default_init_memmap(struct Page *base, size_t n) {
     assert(n > 0);
     struct Page *p = base;
-    for (; p != base + n; p ++) {
+    for (; p != base + n; p++) {
         assert(PageReserved(p));
         p->flags = 0;
         SetPageProperty(p);
@@ -127,7 +127,7 @@ default_free_pages(struct Page *base, size_t n) {
         break;
       }
     }
-    //list_add_before(le, base->page_link);
+    
     for(p=base;p<base+n;p++){
       list_add_before(le, &(p->page_link));
     }
@@ -138,7 +138,7 @@ default_free_pages(struct Page *base, size_t n) {
     base->property = n;
     
     p = le2page(le,page_link) ;
-    if( base+n == p ){
+    if( base + n == p ){
       base->property += p->property;
       p->property = 0;
     }
