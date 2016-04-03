@@ -167,10 +167,30 @@ trap_dispatch(struct trapframe *tf) {
         c = cons_getc();
         cprintf("kbd [%03d] %c\n", c, c);
         break;
-    //LAB1 CHALLENGE 1 : YOUR CODE you should modify below codes.
+    //LAB1 CHALLENGE 1 : 2011011384 you should modify below codes.
     case T_SWITCH_TOU:
+        //The idea is iret pops EFLAGS, EIP, CS to CPU registers
+        //So we push to the stack these registers we want and then directly jump to iret
+        tf->tf_gs = USER_DS;
+        tf->tf_fs = USER_DS;
+        tf->tf_es = USER_DS;
+        tf->tf_ds = USER_DS;
+        tf->tf_ss = USER_DS;
+        tf->tf_cs = USER_CS;
+        //we also have to set IOPL, else cprintf will cause general protection fault
+        //tf->tf_esp doesn't matter here because it will be reset by %ebp in switch_to_user
+        tf->tf_eflags |= FL_IOPL_MASK;
+        break;
     case T_SWITCH_TOK:
-        panic("T_SWITCH_** ??\n");
+        tf->tf_gs = KERNEL_DS;
+        tf->tf_fs = KERNEL_DS;
+        tf->tf_es = KERNEL_DS;
+        tf->tf_ds = KERNEL_DS;
+        tf->tf_ss = KERNEL_DS;
+        tf->tf_cs = KERNEL_CS;
+        //we also have to set IOPL, else cprintf will cause general protection fault
+        //tf->tf_esp doesn't matter here because it will be reset by %ebp in switch_to_user
+        tf->tf_eflags &= ~FL_IOPL_MASK;
         break;
     case IRQ_OFFSET + IRQ_IDE1:
     case IRQ_OFFSET + IRQ_IDE2:
