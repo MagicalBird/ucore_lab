@@ -360,7 +360,7 @@ pmm_init(void) {
 // return vaule: the kernel virtual address of this pte
 pte_t *
 get_pte(pde_t *pgdir, uintptr_t la, bool create) {
-    /* LAB2 EXERCISE 2: 2011011384
+    /* LAB2 EXERCISE 2: YOUR CODE
      *
      * If you need to visit a physical address, please use KADDR()
      * please read pmm.h for useful macros
@@ -393,18 +393,6 @@ get_pte(pde_t *pgdir, uintptr_t la, bool create) {
     }
     return NULL;          // (8) return page table entry
 #endif
-    pde_t *pdep = &pgdir[PDX(la)];
-    if (!(*pdep & PTE_P)) {
-        struct Page *page;
-        if (!create || (page = alloc_page()) == NULL) {
-            return NULL;
-        }
-        set_page_ref(page, 1);
-        uintptr_t pa = page2pa(page);
-        memset(KADDR(pa), 0, PGSIZE);
-        *pdep = pa | PTE_U | PTE_W | PTE_P;
-    }
-    return &((pte_t *)KADDR(PDE_ADDR(*pdep)))[PTX(la)];
 }
 
 //get_page - get related Page struct for linear address la using PDT pgdir
@@ -425,7 +413,7 @@ get_page(pde_t *pgdir, uintptr_t la, pte_t **ptep_store) {
 //note: PT is changed, so the TLB need to be invalidate 
 static inline void
 page_remove_pte(pde_t *pgdir, uintptr_t la, pte_t *ptep) {
-    /* LAB2 EXERCISE 3: 2011011384
+    /* LAB2 EXERCISE 3: YOUR CODE
      *
      * Please check if ptep is valid, and tlb must be manually updated if mapping is updated
      *
@@ -435,7 +423,7 @@ page_remove_pte(pde_t *pgdir, uintptr_t la, pte_t *ptep) {
      * MACROs or Functions:
      *   struct Page *page pte2page(*ptep): get the according page from the value of a ptep
      *   free_page : free a page
-     *   page_ref_dec(page) : decrease page->ref. NOTICE: if page->ref == 0 , then this page should be free.
+     *   page_ref_dec(page) : decrease page->ref. NOTICE: ff page->ref == 0 , then this page should be free.
      *   tlb_invalidate(pde_t *pgdir, uintptr_t la) : Invalidate a TLB entry, but only if the page tables being
      *                        edited are the ones currently in use by the processor.
      * DEFINEs:
@@ -450,15 +438,6 @@ page_remove_pte(pde_t *pgdir, uintptr_t la, pte_t *ptep) {
                                   //(6) flush tlb
     }
 #endif
-    if (*ptep & PTE_P) {
-        struct Page *page = pte2page(*ptep);
-	page_ref_dec(page);
-        if (page->ref == 0) {
-            free_page(page);
-        }
-        *ptep = 0;
-        tlb_invalidate(pgdir, la);
-    }
 }
 
 //page_remove - free an Page which is related linear address la and has an validated pte
