@@ -455,7 +455,7 @@ page_remove_pte(pde_t *pgdir, uintptr_t la, pte_t *ptep) {
 #endif
     if (*ptep & PTE_P) {
         struct Page *page = pte2page(*ptep);
-  page_ref_dec(page);
+        page_ref_dec(page);
         if (page->ref == 0) {
             free_page(page);
         }
