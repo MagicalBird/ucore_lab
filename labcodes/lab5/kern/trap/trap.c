@@ -15,6 +15,7 @@
 #include <error.h>
 #include <sched.h>
 #include <sync.h>
+#include <proc.h>
 
 #define TICK_NUM 100
 
@@ -225,6 +226,10 @@ trap_dispatch(struct trapframe *tf) {
         /* (1) After a timer interrupt, you should record this event using a global variable (increase it), such as ticks in kern/driver/clock.c
          * (2) Every TICK_NUM cycle, you can print some info using a funciton, such as print_ticks().
          * (3) Too Simple? Yes, I think so!
+         */
+        /* LAB5 2011011384 */
+        /* you should upate you lab1 code (just add ONE or TWO lines of code):
+         *    Every TICK_NUM cycle, you should set current process's current->need_resched = 1
          */
         ticks ++;
         if (ticks % TICK_NUM == 0) {
