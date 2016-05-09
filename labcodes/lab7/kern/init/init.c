@@ -94,12 +94,30 @@ lab1_print_cur_status(void) {
 
 static void
 lab1_switch_to_user(void) {
-    //LAB1 CHALLENGE 1 : TODO
+    //LAB1 CHALLENGE 1 : 2011011384
+    //subl $8, %esp is a very tricky way "pad" the struct
+    //In this way, although we trap from kernel to kernel,
+    //tf->tf_esp and tf->tf_ss point to the memory we padded here.
+    //So we can access and modify these fields without corrupting the kernel
+    asm volatile (
+        "subl $8, %%esp\n"
+        "int %0\n"
+        "movl %%ebp, %%esp"
+        :
+        :"i" (T_SWITCH_TOU)
+    );
 }
 
 static void
 lab1_switch_to_kernel(void) {
-    //LAB1 CHALLENGE 1 :  TODO
+    //LAB1 CHALLENGE 1 : 2011011384
+    //movl %ebp, %esp forces to clear the stack
+    asm volatile (
+        "int %0\n"
+        "movl %%ebp, %%esp"
+        :
+        :"i" (T_SWITCH_TOK)
+    );
 }
 
 static void
